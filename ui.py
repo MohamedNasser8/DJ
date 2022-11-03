@@ -71,7 +71,7 @@ if st.session_state.uploaded_file != None and st.session_state.not_enter == 0:
     st.session_state.fig1 = plot_fig(np.array(time_plot), np.array(time_plot), "time", "amp", "signal in time domain")
 
 
-st.plotly_chart(st.session_state.fig1)
+st.pyplot(st.session_state.fig1)
 
 columns = st.columns(2)
 for column in columns:
