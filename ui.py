@@ -74,21 +74,22 @@ if st.session_state.uploaded_file != None and st.session_state.not_enter == 0:
 st.plotly_chart(st.session_state.fig1)
 
 columns = st.columns(2)
-sliders = [0] * len(columns)
-for i in range(len(columns)):
-    with columns[i]:
-        sliders[i] = {"name": f"piano", "value": 1,
-                      }
-        sliders[i]['value'] = svs.vertical_slider(
-            key=i, default_value=1, step=0.01, min_value=0, max_value=1)
-        if sliders[i]['value'] == None:
-            sliders[i]['value'] = 1
+for column in columns:
+    with column:
+        svs.vertical_slider(key = f"slider{columns.index(column)}", 
+                            min_value=-100,
+                            max_value=100,
+                            step=1,
+                            default_value=0,
+                            thumb_color="#2481ce",
+                            slider_color="#061724",
+                            track_color="lightgray")
 with st.sidebar:
     generate = st.button("generate")
 
 
 if generate:
-    f=functions.Instrument(st.session_state.freq_data.copy(),sliders[0]['value'],sliders[1]['value'])
+    f=functions.Instrument(st.session_state.freq_data.copy(),st.session_state['slider0'],st.session_state['slider1'])
     edited_Audio = functions.play(f)
     with st.sidebar:
 
