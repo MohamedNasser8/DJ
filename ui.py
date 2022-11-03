@@ -1,6 +1,4 @@
-from numpy import exp, angle
 import streamlit as st
-import pandas as pd
 import streamlit_vertical_slider as svs
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,6 +8,10 @@ import matplotlib.pyplot as plt
 from scipy import pi
 from scipy.fftpack import fft, ifft
 from scipy.io.wavfile import write
+import functions
+import IPython.display as ipd
+import scipy
+import soundfile as sf
 
 
 st.set_page_config(layout="wide")
@@ -46,12 +48,6 @@ if "time" not in st.session_state:
     st.session_state.time = []
 if "sr" not in st.session_state:
     st.session_state.sr = 0
-# if "fig2" not in st.session_state:
-#     st.session_state.fig2 = plot_fig(np.zeros(10),np.zeros(10),"x_label","y_label","graph")
-# if "fig3" not in st.session_state:
-#     st.session_state.fig3 = plot_fig(np.zeros(10),np.zeros(10),"x_label","y_label","graph")
-# if "fig4" not in st.session_state:
-#     st.session_state.fig4 = plot_fig(np.zeros(10),np.zeros(10),"x_label","y_label","graph")
 
 
 with st.sidebar:
@@ -61,27 +57,27 @@ with st.sidebar:
 
 st.header("equalizer")
 
-# signal_view1 = st.columns(2)
-# signal_view2 = st.columns(2)
+
 
 
 if st.session_state.uploaded_file != None and st.session_state.not_enter == 0:
 
     st.session_state.not_enter = 1
     scale, sr = librosa.load(st.session_state.uploaded_file)
+    frequancies = functions.fourier(scale)
     st.session_state.sr = sr
-    st.session_state.freq_data = fft(scale)
-    st.session_state.fig1 = plot_fig(np.array(time_plot), np.array(
-        scale_plot), "time", "amp", "signal in time domain")
+    st.session_state.freq_data = frequancies
+    time_plot = functions.get_time(scale,sr)
+    st.session_state.fig1 = plot_fig(np.array(time_plot), np.array(time_plot), "time", "amp", "signal in time domain")
 
 
 st.plotly_chart(st.session_state.fig1)
 
-columns = st.columns(1)
+columns = st.columns(2)
 sliders = [0] * len(columns)
 for i in range(len(columns)):
     with columns[i]:
-        sliders[i] = {"name": "piano", "value": 1,
+        sliders[i] = {"name": f"piano", "value": 1,
                       }
         sliders[i]['value'] = svs.vertical_slider(
             key=i, default_value=1, step=0.01, min_value=0, max_value=1)
@@ -91,9 +87,11 @@ with st.sidebar:
     generate = st.button("generate")
 
 
-# if generate:
+if generate:
+    f=functions.Instrument(st.session_state.freq_data.copy(),sliders[0]['value'],sliders[1]['value'])
+    edited_Audio = functions.play(f)
+    with st.sidebar:
 
-
-with st.sidebar:
-    st.audio(st.session_state.uploaded_file, format="audio/wav", start_time=0)
-    st.audio("test.wav", format="audio/wav", start_time=0)
+        sf.write('signal.wav', edited_Audio.real, round(st.session_state.sr/2))
+        st.audio('signal.wav', format="audio/wav", start_time=0)
+    
