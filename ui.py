@@ -58,41 +58,43 @@ with st.sidebar:
 st.header("equalizer")
 
 
-
-
-if st.session_state.uploaded_file != None and st.session_state.not_enter == 0:
+if st.session_state.uploaded_file != None:
 
     st.session_state.not_enter = 1
-    scale, sr = librosa.load(st.session_state.uploaded_file)
-    frequancies = functions.fourier(scale)
+    st.session_state.scale, sr = librosa.load(st.session_state.uploaded_file)
+    st.session_state.freq_data = functions.fourier(st.session_state.scale)
     st.session_state.sr = sr
-    st.session_state.freq_data = frequancies
-    time_plot = functions.get_time(scale,sr)
-    st.session_state.fig1 = plot_fig(np.array(time_plot), np.array(time_plot), "time", "amp", "signal in time domain")
-
-
+    time_plot = functions.get_time(st.session_state.scale, sr)
+    st.session_state.fig1 = plot_fig(np.array(time_plot), np.array(
+        time_plot), "time", "amp", "signal in time domain")
+else:
+    del st.session_state.uploaded_file
 st.pyplot(st.session_state.fig1)
-
+a = 0
 columns = st.columns(2)
 for column in columns:
     with column:
-        svs.vertical_slider(key = f"slider{columns.index(column)}", 
-                            min_value=-100,
-                            max_value=100,
-                            step=1,
-                            default_value=0,
-                            thumb_color="#2481ce",
-                            slider_color="#061724",
-                            track_color="lightgray")
+        a = svs.vertical_slider(key=f"slider{columns.index(column)}",
+                                default_value=1,
+                                step=1,
+                                min_value=-100,
+                                max_value=100,
+                                thumb_color="#2481ce",
+                                slider_color="#061724",
+                                track_color="lightgray")
+
 with st.sidebar:
     generate = st.button("generate")
 
 
 if generate:
-    f=functions.Instrument(st.session_state.freq_data.copy(),st.session_state['slider0'],st.session_state['slider1'])
-    edited_Audio = functions.play(f)
-    with st.sidebar:
+    a = st.session_state['slider0'] if st.session_state['slider0'] != None else 1
+    orignal = functions.play(st.session_state.freq_data)
 
+    f = functions.Instrument(st.session_state.freq_data.copy(
+    ), a, 1)
+    edited_Audio = functions.play(f)
+
+    with st.sidebar:
         sf.write('signal.wav', edited_Audio.real, round(st.session_state.sr/2))
         st.audio('signal.wav', format="audio/wav", start_time=0)
-    
