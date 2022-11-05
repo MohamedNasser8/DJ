@@ -5,9 +5,7 @@ import matplotlib.pyplot as plt
 import librosa
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import pi
-from scipy.fftpack import fft, ifft
-from scipy.io.wavfile import write
+
 import functions
 import IPython.display as ipd
 import scipy
