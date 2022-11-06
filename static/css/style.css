@@ -1,0 +1,13 @@
+.control-bar{
+    margin-top: 30px;
+    
+}
+.control-bar img{
+    height: 20px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+.audio{
+    margin: auto;
+    width: 50%;
+}
