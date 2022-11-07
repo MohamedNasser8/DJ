@@ -15,8 +15,25 @@
     />
   </head>
   <body>
-    {% block body %}{% endblock %}
+    <ul class="nav justify-content-center mb-4">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="/">Music</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/vocals">Vocals</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/ecg">Ecg</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="freq">Random Frequncies</a>
+      </li>
+    </ul>
   
+    {% block body %}{% endblock %}
+    <form action="{{ url_for("music")}}" method="POST" class="all-sliders" enctype = "multipart/form-data">
+    </form>
+    <div id="flask_data" data='{{dict_values | tojson}}' style="display:none;" path = "{{ path }}"></div>
     <script src="static/js/canvas.js"></script>
     <script src="static/js/wavesurfer.js"></script>
 

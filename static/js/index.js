@@ -20,8 +20,11 @@ var wavesurfer1 = WaveSurfer.create({
   reponsive: true,
   hideScrollbar: true
 });
-wavesurfer1.load("static/audio/guitar.wav");
-wavesurfer.load("static/audio/guitar.wav");
+
+let path = document.getElementById("flask_data").getAttribute("path");
+wavesurfer.load(path);
+wavesurfer1.load(path);
+
 
 playBtn.onclick = function () {
   wavesurfer.playPause();
@@ -80,7 +83,7 @@ for (let i =0 ; i<n;i++){
 str +=     
 `
 <div class="custom-file">
-  <input type="file" class="custom-file-input" id="inputGroupFile01">
+  <input type="file" class="custom-file-input" name = "file" id="inputGroupFile01">
 </div>
 </div>
   <input class="btn btn-primary" type="submit" value="Submit">

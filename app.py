@@ -15,8 +15,11 @@ from PIL import Image
 import function
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
-app.config['UPLOAD_FOLDER'] = 'files'
 
+
+app.config['UPLOAD_FOLDER'] = "static/audio"
+app.config["SECRET_KEY"] = "superkey"
+# ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 def processed(y):
     fourier = function.fourier(y)
@@ -96,12 +99,52 @@ def music():
     if request.method == "POST":
        for i in range(n_of_sliders):
            dict_sliders[f"slider{i}"]["value"] = request.form.get(f"slider{i}")
-       return render_template('music.html',dict_values = dict_sliders)
+       f = request.files['file']
+       path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
+       f.save(path)
+
+       return render_template('music.html',dict_values = dict_sliders,path=path)
 
 
             
-    return render_template('music.html',dict_values = dict_sliders)
+    return render_template('music.html',dict_values = dict_sliders,path =None)
 
+
+@app.route('/ecg', methods=['GET', "POST"])
+def ecg():
+    n_of_sliders = 3
+    dict_sliders = get_sliders(n_of_sliders,["low" , "mid","high"])
+    if request.method == "POST":
+       for i in range(n_of_sliders):
+           dict_sliders[f"slider{i}"]["value"] = request.form.get(f"slider{i}")
+       f = request.files['file']
+       path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
+       f.save(path)
+
+       return render_template('ecg.html',dict_values = dict_sliders,path=path)
+
+
+            
+    return render_template('ecg.html',dict_values = dict_sliders,path =None)
+
+
+
+@app.route('/vocals', methods=['GET', "POST"])
+def vocals():
+    n_of_sliders = 10
+    dict_sliders = get_sliders(n_of_sliders,["A" ,"B","C",'D','E','F','G','H','I','J'])
+    if request.method == "POST":
+       for i in range(n_of_sliders):
+           dict_sliders[f"slider{i}"]["value"] = request.form.get(f"slider{i}")
+       f = request.files['file']
+       path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
+       f.save(path)
+
+       return render_template('vocals.html',dict_values = dict_sliders,path=path)
+
+
+            
+    return render_template('vocals.html',dict_values = dict_sliders,path =None)
 
 if __name__ == '__main__':
     app.run(debug=True)

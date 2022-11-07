@@ -1,20 +1,6 @@
 
     {%extends 'base.html'%}
     {% block body %}
-    <ul class="nav justify-content-center mb-4">
-      <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="/">Music</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="music">Vocals</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="freq">Ecg</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="freq">Random Frequncies</a>
-      </li>
-    </ul>
 
     <div class="audio">
       <div id="waveform" class="mb-4" style="width: 700px"></div>
@@ -35,9 +21,7 @@
         />
       </div>
     </div>
-    <form action="{{ url_for("music")}}" method="POST" class="all-sliders" enctype = "multipart/form-data">
-    </form>
-    <div id="flask_data" data='{{dict_values | tojson}}' style="display:none;"></div>
+    
     {% endblock %}
 
     
