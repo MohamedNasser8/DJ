@@ -1,25 +1,6 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
-      crossorigin="anonymous"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}"
-    />
-  </head>
-  <body>
+
+    {%extends 'base.html'%}
+    {% block body %}
     <ul class="nav justify-content-center mb-4">
       <li class="nav-item">
         <a class="nav-link active" aria-current="page" href="/">Music</a>
@@ -54,56 +35,12 @@
         />
       </div>
     </div>
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-    <script src="https://unpkg.com/wavesurfer.js"></script>
-    <script>
-      playBtn = document.getElementById("play");
-      stopBtn = document.getElementById("stop");
-      volumeBtn = document.getElementById("volume");
+    <form action="{{ url_for("music")}}" method="POST" class="all-sliders" enctype = "multipart/form-data">
+    </form>
+    <div id="flask_data" data='{{dict_values | tojson}}' style="display:none;"></div>
+    {% endblock %}
 
-      var wavesurfer = WaveSurfer.create({
-        container: "#waveform",
-        waveColor: "#e3bbee",
-        progressColor: "#fe38ab",
-        barHeight: 4,
-        reponsive: true,
-      });
-      var wavesurfer1 = WaveSurfer.create({
-        container: "#waveform1",
-        waveColor: "#e3bbee",
-        progressColor: "#fe38ab",
-        barHeight: 4,
-        reponsive: true,
-      });
-      wavesurfer1.load("static/images/Same.mp3");
-      wavesurfer.load("static/images/Same.mp3");
+    
 
-      playBtn.onclick = function () {
-        wavesurfer.playPause();
-        wavesurfer1.playPause();
-        if (playBtn.src.match("play")) playBtn.src = "static/images/pause.png";
-        else playBtn.src = "static/images/play.png";
-      };
-      stopBtn.onclick = function () {
-        wavesurfer.stop();
-        wavesurfer1.stop();
-        playBtn.src = "static/images/play.png";
-      };
 
-      volumeBtn.onclick = function () {
-        wavesurfer.toggleMute();
-        wavesurfer1.toggleMute();
-        if (volumeBtn.src.match("volume"))
-          volumeBtn.src = "static/images/mute.png";
-        else volumeBtn.src = "static/images/volume.png";
-      };
-      var slider = document.querySelector("#slider");
 
-      slider.oninput = function () {
-        var zoomLevel = Number(slider.value);
-        wavesurfer.zoom(zoomLevel);
-        wavesurfer1.zoom(zoomLevel);
-      };
-    </script>
-  </body>
-</html>
