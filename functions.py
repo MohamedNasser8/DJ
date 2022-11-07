@@ -70,13 +70,21 @@ def split_arrhythmia(ecg_freq):
         ----------
         f_arrhythmia : array of complex 
         f_normal : array of complex 
-
             
     """
-    f_arrhythmia = [0]*len(ecg_freq)
-    f_arrhythmia[150:]=ecg_freq[150:]
-    f_normal = ecg_freq[:150]
-    return f_arrhythmia, f_normal
+    artial_trachycardia= [0]*len(ecg_freq)
+    artial_flutter= [0]*len(ecg_freq)
+    artial_fibrillation= [0]*len(ecg_freq) 
+    #230
+    artial_trachycardia[220:240]=ecg_freq[220:240]
+    #300
+    artial_flutter[290:310]=ecg_freq[290:310]
+    #350
+    artial_fibrillation[340:360]=ecg_freq[340:360]
+
+    f_normal = ecg_freq-artial_trachycardia-artial_flutter-artial_fibrillation
+    
+    return artial_trachycardia, artial_flutter, artial_fibrillation, f_normal
 
 
 
