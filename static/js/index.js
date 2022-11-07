@@ -78,8 +78,13 @@ for (let i =0 ; i<n;i++){
 }
 
 str +=     
-`<input type = "file" name = "file" style="margin:10px"/>
-<input type = "submit"/>` 
+`
+<div class="custom-file">
+  <input type="file" class="custom-file-input" id="inputGroupFile01">
+</div>
+</div>
+  <input class="btn btn-primary" type="submit" value="Submit">
+` 
 document.getElementsByClassName("all-sliders")[0].innerHTML = str
 
 const sliders = document.getElementsByClassName("slider")
