@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_file,request
+from flask import Flask, render_template, send_file, request
 from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
 from werkzeug.utils import secure_filename
@@ -10,9 +10,10 @@ import base64
 from wtforms.validators import InputRequired
 import librosa
 from glob import glob
+import soundfile as sf
 import numpy as np
 from PIL import Image
-import function
+import functions
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
 
@@ -20,6 +21,7 @@ app.config['SECRET_KEY'] = 'supersecretkey'
 app.config['UPLOAD_FOLDER'] = "static/audio"
 app.config["SECRET_KEY"] = "superkey"
 # ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
 
 def processed(y):
     fourier = function.fourier(y)
@@ -42,7 +44,7 @@ class UploadFileForm(FlaskForm):
 #     encoded_img_data = base64.b64encode(data.getvalue())
 #     form = UploadFileForm()
 #     if form.validate_on_submit():
-        
+
 #         file = form.file.data  # First grab the file
 #         file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)),
 #                   app.config['UPLOAD_FOLDER'], secure_filename(file.filename)))  # Then save the file
@@ -83,69 +85,76 @@ class UploadFileForm(FlaskForm):
 #     return render_template('index.html', form=form, y=0, t=0, y2=0)
 
 
-def get_sliders(n,names):
+def get_sliders(n, names):
     dict_sliders = {}
     for i in range(n):
-        dict_sliders[f"slider{i}"] = {"value":0,"name":names[i]}
+        dict_sliders[f"slider{i}"] = {"value": 0, "name": names[i]}
     return dict_sliders
-
 
 
 @app.route('/', methods=['GET', "POST"])
 @app.route('/music', methods=['GET', "POST"])
 def music():
     n_of_sliders = 4
-    dict_sliders = get_sliders(n_of_sliders,["piano" , "guitar","vioin","drums"])
+    dict_sliders = get_sliders(
+        n_of_sliders, ["piano", "guitar", "vioin", "drums"])
+
     if request.method == "POST":
-       for i in range(n_of_sliders):
-           dict_sliders[f"slider{i}"]["value"] = request.form.get(f"slider{i}")
-       f = request.files['file']
-       path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
-       f.save(path)
+        for i in range(n_of_sliders):
+            dict_sliders[f"slider{i}"]["value"] = request.form.get(
+                f"slider{i}")
+        f = request.files['file']
+        path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
+        f.save(path)
+        scale, sr = librosa.load(path)
+        f = functions.fourier(scale)
+        t = functions.get_time(scale, sr)
+        scaleProcess = functions.split_music(f, dict_sliders)
+        sf.write('static/audio/sig.wav', scaleProcess.real, round(sr/2))
+        path1 = 'static/audio/sig.wav'
+        return render_template('music.html', dict_values=dict_sliders, path=path, path1=path1, url="/")
 
-       return render_template('music.html',dict_values = dict_sliders,path=path)
-
-
-            
-    return render_template('music.html',dict_values = dict_sliders,path =None)
+    return render_template('music.html', dict_values=dict_sliders, path=None, path1=None, url="/")
 
 
 @app.route('/ecg', methods=['GET', "POST"])
 def ecg():
     n_of_sliders = 3
-    dict_sliders = get_sliders(n_of_sliders,["low" , "mid","high"])
+    dict_sliders = get_sliders(n_of_sliders, ["low", "mid", "high"])
     if request.method == "POST":
-       for i in range(n_of_sliders):
-           dict_sliders[f"slider{i}"]["value"] = request.form.get(f"slider{i}")
-       f = request.files['file']
-       path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
-       f.save(path)
+        for i in range(n_of_sliders):
+            dict_sliders[f"slider{i}"]["value"] = request.form.get(
+                f"slider{i}")
+        f = request.files['file']
+        path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
+        f.save(path)
 
-       return render_template('ecg.html',dict_values = dict_sliders,path=path)
+        return render_template('ecg.html', dict_values=dict_sliders, path=path)
 
-
-            
-    return render_template('ecg.html',dict_values = dict_sliders,path =None)
-
+    return render_template('ecg.html', dict_values=dict_sliders, path=None)
 
 
 @app.route('/vocals', methods=['GET', "POST"])
 def vocals():
     n_of_sliders = 10
-    dict_sliders = get_sliders(n_of_sliders,["A" ,"B","C",'D','E','F','G','H','I','J'])
+    dict_sliders = get_sliders(
+        n_of_sliders, ["A", "B", "C", 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
     if request.method == "POST":
-       for i in range(n_of_sliders):
-           dict_sliders[f"slider{i}"]["value"] = request.form.get(f"slider{i}")
-       f = request.files['file']
-       path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
-       f.save(path)
+        for i in range(n_of_sliders):
+            dict_sliders[f"slider{i}"]["value"] = request.form.get(
+                f"slider{i}")
+        f = request.files['file']
+        path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
+        f.save(path)
+        scale, sr = librosa.load(path)
+        processed = functions.split_vowels(scale)
+        print(len(scale), len(processed))
+        sf.write('static/audio/vocal.wav', processed, round(sr))
+        path1 = 'static/audio/vocal.wav'
+        return render_template('vocals.html', dict_values=dict_sliders, path=path, path1=path1)
 
-       return render_template('vocals.html',dict_values = dict_sliders,path=path)
+    return render_template('vocals.html', dict_values=dict_sliders, path=None, path1=None, url="vocals")
 
-
-            
-    return render_template('vocals.html',dict_values = dict_sliders,path =None)
 
 if __name__ == '__main__':
     app.run(debug=True)
-
