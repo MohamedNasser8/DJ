@@ -25,31 +25,34 @@ wavesurfer1.load(path1);
 wavesurfer.load(path);
 
 switchBtn.onclick = function () {
-  if (switchBtn.textContent == "Original Audio")
+  if (switchBtn.textContent == "Original Audio") {
     switchBtn.textContent = "Processed Audio";
-  else {
+    if (!wavesurfer.getMute()) wavesurfer.toggleMute();
+    if (wavesurfer1.getMute()) wavesurfer1.toggleMute();
+  } else {
     switchBtn.textContent = "Original Audio";
+    if (!wavesurfer1.getMute()) wavesurfer1.toggleMute();
+    if (wavesurfer.getMute()) wavesurfer.toggleMute();
   }
-  wavesurfer.stop();
-  playBtn.src = "static/images/play.png";
-  wavesurfer1.stop();
+  volumeBtn.src = "static/images/volume.png";
 };
 
 playBtn.onclick = function () {
   if (switchBtn.innerHTML == "Original Audio") {
-    wavesurfer.playPause();
+    if (!wavesurfer1.getMute()) wavesurfer1.toggleMute();
   } else {
-    wavesurfer1.playPause();
+    if (!wavesurfer.getMute()) wavesurfer.toggleMute();
   }
+  wavesurfer1.playPause();
+  wavesurfer.playPause();
+
   if (playBtn.src.match("play")) playBtn.src = "static/images/pause.png";
   else playBtn.src = "static/images/play.png";
 };
 stopBtn.onclick = function () {
-  if (switchBtn.innerHTML == "Original Audio") {
-    wavesurfer.stop();
-  } else {
-    wavesurfer1.stop();
-  }
+  wavesurfer.stop();
+  wavesurfer1.stop();
+
   playBtn.src = "static/images/play.png";
 };
 
