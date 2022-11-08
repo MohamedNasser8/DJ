@@ -1,4 +1,5 @@
-from flask import Flask, render_template, send_file, request,redirect
+from scipy.io import wavfile
+from flask import Flask, render_template, send_file, request, redirect
 from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
 from werkzeug.utils import secure_filename
@@ -15,7 +16,6 @@ import numpy as np
 from PIL import Image
 import functions
 app = Flask(__name__)
-from scipy.io import wavfile
 app.config['SECRET_KEY'] = 'supersecretkey'
 
 app.config['UPLOAD_FOLDER'] = "static/audio"
@@ -36,8 +36,6 @@ class UploadFileForm(FlaskForm):
     submit = SubmitField("Upload File")
 
 
-
-
 def get_sliders(n, names):
     dict_sliders = {}
     for i in range(n):
@@ -45,8 +43,8 @@ def get_sliders(n, names):
     return dict_sliders
 
 
-@app.route('/', methods=['GET', "POST","put"])
-@app.route('/music', methods=['GET', "POST","put"])
+@app.route('/', methods=['GET', "POST", "put"])
+@app.route('/music', methods=['GET', "POST", "put"])
 def music():
     n_of_sliders = 4
     dict_sliders = get_sliders(
@@ -60,25 +58,23 @@ def music():
     #     path = os.path.join(app.config['UPLOAD_FOLDER'], "test.wav")
     #     f.save(path)
 
-    if request.method == "POST" :
+    if request.method == "POST":
         for i in range(n_of_sliders):
             dict_sliders[f"slider{i}"]["value"] = request.form.get(
                 f"slider{i}")
         f = request.files['file']
-        if f.filename != "" :
+        if f.filename != "":
             path = os.path.join(app.config['UPLOAD_FOLDER'], "test.wav")
             f.save(path)
         else:
             path = "static/audio/test.wav"
-            
-        scale, sr = librosa.load(path)
 
+        scale, sr = librosa.load(path)
 
         # except:
         #     samplerate,  f = wavfile.read('static/audio/test.wav')
         #     path = "static/audio/test.wav"
         #     scale, sr = librosa.load(path)
-
 
         f = functions.fourier(scale)
         t = functions.get_time(scale, sr)
@@ -102,9 +98,9 @@ def ecg():
         path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
         f.save(path)
 
-        return render_template('ecg.html', dict_values=dict_sliders, path=path)
+        return render_template('ecg.html', dict_values=dict_sliders, path=path, path1=None)
 
-    return render_template('ecg.html', dict_values=dict_sliders, path=None)
+    return render_template('ecg.html', dict_values=dict_sliders, path=None, path1=None)
 
 
 @app.route('/vocals', methods=['GET', "POST"])
@@ -126,7 +122,7 @@ def vocals():
         path1 = 'static/audio/vocal.wav'
         return render_template('vocals.html', dict_values=dict_sliders, path=path, path1=path1)
 
-    return render_template('vocals.html', dict_values=dict_sliders, path=None, path1=None, url="vocals")
+    return render_template('vocals.html', dict_values=dict_sliders, path=None, path1=None)
 
 
 if __name__ == '__main__':
