@@ -84,9 +84,9 @@ let values = JSON.parse(
 );
 console.log(values);
 let n = Object.keys(values).length;
-let str = "";
+let str = `<div class="d-flex flex-wrap all-sliders">`;
 for (let i = 0; i < n; i++) {
-  str += `<div class="container">
+  str += `<div class="container1">
         <div class="number" id="number${i}">${
     values[`slider${i}`]["value"]
   }</div>
@@ -100,14 +100,15 @@ for (let i = 0; i < n; i++) {
     </div>`;
 }
 
-str += `
-<div class="custom-file">
+str += `</div>
+<div class="upload"><div class="custom-file">
 <input type="file" class="custom-file-input" name = "file" id="inputGroupFile01" onchange="uploadfile()"">
 </div>
 
-  <input class="btn btn-primary" type="submit" value="Submit">
+  <input class="btn btn-primary" type="submit" value="Submit"></div>
   `;
-document.getElementsByClassName("all-sliders")[0].innerHTML = str;
+document.getElementsByClassName("form")[0].innerHTML = str;
+// document.getElementsByClassName("upload").innerHTML = str1;
 
 const sliders = document.getElementsByClassName("slider");
 const number = document.getElementsByClassName("number");

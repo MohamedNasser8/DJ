@@ -114,7 +114,7 @@ def split_music(music_freq, sliders):
     return int(sliders["slider0"]["value"])*inverse_fourier(f_piano).real + int(sliders["slider1"]["value"])*inverse_fourier(f_guitar).real + int(sliders["slider2"]["value"])*inverse_fourier(f_drums).real + int(sliders["slider3"]["value"])*inverse_fourier(f_rest).real
 
 
-def split_vowels(audio_freq):
+def split_vowels(audio_freq, sliders):
     """
         separate audio vowels
         Parameters
@@ -137,7 +137,7 @@ def split_vowels(audio_freq):
         f_rest : Vowel the other components
 
     """
-
+    print(sliders)
 # inizialization of components arrays
     f_A = [0]*len(audio_freq)
     f_Y = [0]*len(audio_freq)

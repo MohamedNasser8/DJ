@@ -50,13 +50,6 @@ def music():
     dict_sliders = get_sliders(
         n_of_sliders, ["piano", "guitar", "vioin", "drums"])
     f = None
-    # if request.method ==  "put":
-    #     pass
-
-    # if request.method == "PUT":
-    #     f = request.files['file']
-    #     path = os.path.join(app.config['UPLOAD_FOLDER'], "test.wav")
-    #     f.save(path)
 
     if request.method == "POST":
         for i in range(n_of_sliders):
@@ -113,13 +106,17 @@ def vocals():
             dict_sliders[f"slider{i}"]["value"] = request.form.get(
                 f"slider{i}")
         f = request.files['file']
-        path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
-        f.save(path)
+        if f.filename != "":
+            path = os.path.join(app.config['UPLOAD_FOLDER'], "test.wav")
+            f.save(path)
+        else:
+            path = "static/audio/test.wav"
+
         scale, sr = librosa.load(path)
-        processed = functions.split_vowels(scale)
+        processed = functions.split_vowels(scale, dict_sliders)
         print(len(scale), len(processed))
-        sf.write('static/audio/vocal.wav', processed, round(sr))
-        path1 = 'static/audio/vocal.wav'
+        sf.write('static/audio/sig.wav', processed, round(sr))
+        path1 = 'static/audio/sig.wav'
         return render_template('vocals.html', dict_values=dict_sliders, path=path, path1=path1)
 
     return render_template('vocals.html', dict_values=dict_sliders, path=None, path1=None)
