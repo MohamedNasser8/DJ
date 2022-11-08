@@ -6,7 +6,7 @@ import librosa
 import numpy as np
 import matplotlib.pyplot as plt
 
-import functions
+import Audio_Files.functions as functions
 import IPython.display as ipd
 import scipy
 import soundfile as sf

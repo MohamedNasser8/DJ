@@ -1,7 +1,3 @@
-signal=None
-f_max = 0
-
-
 import numpy as np
 
 
@@ -57,10 +53,8 @@ def get_time(scale, sr):
     """
     return np.arange(0, len(scale)/sr, 1/sr)
 
-    
-def getindex(freq_Hz):
 
-    return freq_Hz/f_max * len(signal)
+#---------------------------------------- Signal Spliters -----------------------------------------#
 
 def split_arrhythmia(ecg_freq):
     """
@@ -69,32 +63,26 @@ def split_arrhythmia(ecg_freq):
         ----------
         ecg_freq : array of complex
             arrithmia and normal components 
+
         Return
         ----------
         f_arrhythmia : array of complex 
         f_normal : array of complex 
+
     """
     artial_trachycardia = [0]*len(ecg_freq)
     artial_flutter = [0]*len(ecg_freq)
     artial_fibrillation = [0]*len(ecg_freq)
-
-    trachycardia = getindex(250)
-
-    flutter = getindex(350)
-
-    fibrillation = getindex(600)
-
     # 230
-    artial_trachycardia[trachycardia-50:trachycardia+50] = ecg_freq[trachycardia-50:trachycardia+50]*np.hanning(100)
+    artial_trachycardia[220:240] = ecg_freq[220:240]
     # 300
-    artial_flutter[flutter-50:flutter+50] = ecg_freq[flutter-50:flutter+50]*np.hanning(350-250)
+    artial_flutter[290:310] = ecg_freq[290:310]
     # 350
-    artial_fibrillation[fibrillation-50:fibrillation+50] = ecg_freq[fibrillation-50:fibrillation+50]*np.hanning(360-350)
+    artial_fibrillation[340:360] = ecg_freq[340:360]
 
     f_normal = ecg_freq-artial_trachycardia-artial_flutter-artial_fibrillation
 
     return artial_trachycardia, artial_flutter, artial_fibrillation, f_normal
-
 
 
 def split_music(music_freq, sliders):
@@ -104,49 +92,36 @@ def split_music(music_freq, sliders):
         ----------
         music_freq : array of complex
             array of music frequencies
+
         Return
         ----------
         f_piano : array of complex 
         f_guitar : array of complex 
         f_drums : array of complex 
         f_rest : array of complex 
+
     """
-
-    piano_f1 = getindex(660)
-    piano_f2 = getindex(1720)
-
-    guitar_f3 = getindex(294)
-    guitar_f3 = getindex(2637)
-
-    drums_f1 = getindex(432)
-    drums_f2 = getindex(40)
-
     f_piano = [0]*len(music_freq)
     f_guitar = [0]*len(music_freq)
     f_drums = [0]*len(music_freq)
     f_rest = [0]*len(music_freq)
-
-
-    f_piano[piano_f1-1500: piano_f1+1500] = music_freq[piano_f1: piano_f1]*np.hanning(3000)
-    f_piano[piano_f2-1500: piano_f2+1500] = music_freq[piano_f2: piano_f2]*np.hanning(3000)
-    f_guitar[guitar_f3-1500: guitar_f3+1500] = music_freq[guitar_f3: guitar_f3]*np.hanning(3000)
-    f_drums[drums_f1-1500: drums_f2+1500] = music_freq[drums_f1: drums_f1]*np.hanning(3000)
+    f_piano[301211: 303045] = music_freq[301211: 303045]
+    f_piano[21211: 81211] = music_freq[21211: 81211]
+    f_guitar[8211: 21211] = music_freq[8211: 21211]
+    f_drums[100: 500] = music_freq[100: 500]
 
     f_rest = music_freq - f_piano - f_guitar
     return int(sliders["slider0"]["value"])*inverse_fourier(f_piano).real + int(sliders["slider1"]["value"])*inverse_fourier(f_guitar).real + int(sliders["slider2"]["value"])*inverse_fourier(f_drums).real + int(sliders["slider3"]["value"])*inverse_fourier(f_rest).real
 
 
-
-
-
-
-def split_vowels(audio_freq):
+def split_vowels(audio_freq, sliders):
     """
         separate audio vowels
         Parameters
         ----------
         audio_freq : array of complex
             array of Audio frequencies
+
         Return
         ----------
         f_A : Vowel A components
@@ -160,8 +135,9 @@ def split_vowels(audio_freq):
         f_n : Vowel N components
         f_d : Vowel D components
         f_rest : Vowel the other components
-    """
 
+    """
+    print(sliders)
 # inizialization of components arrays
     f_A = [0]*len(audio_freq)
     f_Y = [0]*len(audio_freq)
@@ -174,87 +150,47 @@ def split_vowels(audio_freq):
     f_n = [0]*len(audio_freq)
     f_d = [0]*len(audio_freq)
 
-
-
-    A_f1=getindex(660)
-    A_f2=getindex(1720)
-    A_f3=getindex(2410)
-
-    Y_f1=getindex(270)
-    Y_f2=getindex(2290)
-    Y_f3=getindex(3010)
-
-    th_f1=getindex(490)
-    th_f2=getindex(1350)
-
-    v_f1=getindex(530)
-    v_f2=getindex(1840)
-
-    ch_f1=getindex(600)
-    ch_f2=getindex(1170)
-
-
-    s_f1=getindex(500)
-    s_f2=getindex(700)
-
-    o_f1=getindex(730)
-    o_f2=getindex(1090)
-
-    r_f1=getindex(640)
-    r_f2=getindex(1310)
-
-    n_f1=getindex(44)
-    n_f2=getindex(120)
-    n_f3=getindex(550)
-
-    d_f1=getindex(55)
-    d_f2=getindex(320)
-    d_f3=getindex(740)
-
-
-
-
     # A
-    f_A[A_f1-500:A_f1+500] = audio_freq[A_f1-500:A_f1+500] *np.hanning(1000)
-    f_A[A_f2-500:A_f2+500]  = audio_freq[A_f2-500:A_f2+500] *np.hanning(1000)
-    f_A[A_f3-500:A_f3+500]  = audio_freq[A_f3-500:A_f3+500] *np.hanning(1000)
+    f_A[31500:32700] = audio_freq[31500:32700]
+    f_A[95000:96000] = audio_freq[95000:96000]
+    f_A[110000:120000] = audio_freq[110000:120000]
 
     # Y
-    f_Y[Y_f1-1500:Y_f1+1500] = audio_freq[Y_f1-1500:Y_f1+1500]*np.hanning(3000)
-    f_Y[Y_f2-1500:Y_f2+1500] = audio_freq[Y_f2-1500:Y_f2+1500]*np.hanning(3000)
-    f_Y[Y_f3-1500:Y_f3+1500] = audio_freq[Y_f3-1500:Y_f3+1500]*np.hanning(3000)
+    f_Y[20000:29000] = audio_freq[20000:29000]
+    f_Y[36000:38000] = audio_freq[36000:38000]
+    f_Y[92000:95000] = audio_freq[92000:95000]
 
     # V
-    f_V[v_f1-1500:v_f1+1500] = audio_freq[v_f1-1500:v_f1+1500]*np.hanning(3000)
-    f_V[v_f2-1500:v_f2+1500] = audio_freq[v_f2-1500:v_f2+1500]*np.hanning(3000)
+    f_V[29000:31500] = audio_freq[29000:31500]
+    f_V[96000:99000] = audio_freq[96000:99000]
 
     # Th
-    f_th[th_f1-1500:th_f1+1500] = audio_freq[th_f1-1500:th_f1+1500]*np.hanning(3000)
+    f_th[45700:49700] = audio_freq[45700:49700]
 
     # Ch
-    f_ch[ch_f1-1500:ch_f1+1500] = audio_freq[ch_f1-1500:ch_f1+1500]*np.hanning(3000)
+    f_ch[49700:54000] = audio_freq[49700:54000]
 
     # S
-    f_s[s_f1-1500:s_f1+1500]= audio_freq[s_f1-1500:s_f1+1500]*np.hanning(3000)
-    f_s[s_f2-1500:s_f2+1500] = audio_freq[s_f2-1500:s_f2+1500]*np.hanning(3000)
+    f_s[56000:60000] = audio_freq[56000:60000]
+    f_s[106400:109000] = audio_freq[106400:109000]
 
     # O
-    f_o[o_f1-1500:o_f1+1500] = audio_freq[o_f1-1500:o_f1+1500]*np.hanning(3000)
-    f_o[o_f2-1500:o_f2+1500] = audio_freq[o_f2-1500:o_f2+1500]*np.hanning(3000)
+    f_o[54000:56000] = audio_freq[54000:56000]
+    f_o[100800:102000] = audio_freq[100800:102000]
 
     # R
-    f_r[r_f1-1500:r_f1+1500] = audio_freq[r_f1-1500:r_f1+1500]*np.hanning(3000)
-    f_r[r_f2-1500:r_f2+1500] = audio_freq[r_f2-1500:r_f2+1500]*np.hanning(3000)
+    f_r[33000:35500] = audio_freq[33000:35500]
+    f_r[104400:106400] = audio_freq[104400:106400]
 
     # N
-    f_n[n_f1-1500:n_f1+1500] = audio_freq[n_f1-1500:n_f1+1500]*np.hanning(3000)
-    f_n[n_f2-1500:n_f2+1500] = audio_freq[n_f2-1500:n_f2+1500]*np.hanning(3000)
-    f_n[n_f3-1500:n_f3+1500] = audio_freq[n_f3-1500:n_f3+1500]*np.hanning(3000)
+    f_n[80000:89000] = audio_freq[80000:89000]
+    f_n[103000:104400] = audio_freq[103000:104400]
+    f_n[113000:116000] = audio_freq[113000:116000]
 
     # D
-    f_d[d_f1-1500:d_f1+1500] = audio_freq[d_f1-1500:d_f1+1500]*np.hanning(3000)
-    f_d[d_f2-1500:d_f2+1500] = audio_freq[d_f2-1500:d_f2+1500]*np.hanning(3000)
-    f_d[d_f3-1500:d_f3+1500] = audio_freq[d_f3-1500:d_f3+1500]*np.hanning(3000)
+    f_d[116000:119000] = audio_freq[116000:119000]
+    f_d[35500:37500] = audio_freq[35500:37500]
+    f_d[43000:49000] = audio_freq[43000:49000]
 
     f_rest = audio_freq - f_r - f_A - f_ch - f_d - \
         f_n - f_Y - f_th - f_o - f_n - f_s - f_V

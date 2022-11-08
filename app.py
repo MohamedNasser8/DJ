@@ -14,7 +14,7 @@ from glob import glob
 import soundfile as sf
 import numpy as np
 from PIL import Image
-import functions
+import Audio_Files.functions as functions
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
 
