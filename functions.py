@@ -194,4 +194,4 @@ def split_vowels(audio_freq):
 
     f_rest = audio_freq - f_r - f_A - f_ch - f_d - \
         f_n - f_Y - f_th - f_o - f_n - f_s - f_V
-    return f_A, f_Y, f_V, f_th, f_ch, f_s, f_o, f_r, f_n, f_d, f_rest
+    return np.add(f_A,  np.add(f_Y, np.add(f_V, np.add(f_th, np.add(f_ch, np.add(f_s, np.add(f_o, np.add(f_r, np.add(f_n, np.add(f_d, f_rest))))))))))
