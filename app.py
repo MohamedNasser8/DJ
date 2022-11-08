@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_file, request
+from flask import Flask, render_template, send_file, request,redirect
 from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
 from werkzeug.utils import secure_filename
@@ -15,8 +15,8 @@ import numpy as np
 from PIL import Image
 import functions
 app = Flask(__name__)
+from scipy.io import wavfile
 app.config['SECRET_KEY'] = 'supersecretkey'
-
 
 app.config['UPLOAD_FOLDER'] = "static/audio"
 app.config["SECRET_KEY"] = "superkey"
@@ -36,53 +36,6 @@ class UploadFileForm(FlaskForm):
     submit = SubmitField("Upload File")
 
 
-# @app.route('/freq', methods=['GET', "POST"])
-# def home():
-#     im = Image.open("files/out.jpg")
-#     data = io.BytesIO()
-#     im.save(data, "JPEG")
-#     encoded_img_data = base64.b64encode(data.getvalue())
-#     form = UploadFileForm()
-#     if form.validate_on_submit():
-
-#         file = form.file.data  # First grab the file
-#         file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)),
-#                   app.config['UPLOAD_FOLDER'], secure_filename(file.filename)))  # Then save the file
-#         audio_file = glob("C:/Users/nasse/Downloads/NfWhy.wav")
-#         y, sr = librosa.load(audio_file[0])
-#         S = librosa.feature.melspectrogram(y=y,
-#                                            sr=sr,
-#                                            n_mels=128 * 2,)
-#         S_db_mel = librosa.amplitude_to_db(S, ref=np.max)
-#         fig, ax = plt.subplots(figsize=(10, 5))
-#         # Plot the mel spectogram3
-#         img = librosa.display.specshow(S_db_mel,
-#                                        x_axis='time',
-#                                        y_axis='log',
-#                                        ax=ax)
-#         ax.set_title('Mel Spectogram Example', fontsize=20)
-#         fig.colorbar(img, ax=ax, format=f'%0.2f')
-#         plt.savefig("out.jpg")
-#         t = np.arange(0, len(y)/sr, 1/sr)
-#         y_p = processed(y)
-#         x = [0]
-#         z = [0]
-#         q = [0]
-#         for i in y:
-#             x.append(float(i))
-#         for i in t:
-#             z.append(i)
-#         for i in y_p:
-#             q.append(i)
-#         im = Image.open("out.jpg")
-#         data = io.BytesIO()
-#         im.save(data, "JPEG")
-
-#         encoded_img_data = base64.b64encode(data.getvalue())
-#         return render_template('index.html', form=form, y=x, t=z, y2=q, img_data=encoded_img_data.decode('utf-8'))
-
-
-#     return render_template('index.html', form=form, y=0, t=0, y2=0)
 
 
 def get_sliders(n, names):
@@ -99,14 +52,24 @@ def music():
     dict_sliders = get_sliders(
         n_of_sliders, ["piano", "guitar", "vioin", "drums"])
 
-    if request.method == "POST":
+
+
+    if request.method == "POST" :
         for i in range(n_of_sliders):
             dict_sliders[f"slider{i}"]["value"] = request.form.get(
                 f"slider{i}")
-        f = request.files['file']
-        path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
-        f.save(path)
-        scale, sr = librosa.load(path)
+        try:
+            f = request.files['file']
+            path = os.path.join(app.config['UPLOAD_FOLDER'], "test.wav")
+            f.save(path)
+            scale, sr = librosa.load(path)
+
+        except:
+            samplerate,  f = wavfile.read('static/audio/test.wav')
+            path = "static/audio/test.wav"
+            scale, sr = librosa.load(path)
+
+
         f = functions.fourier(scale)
         t = functions.get_time(scale, sr)
         scaleProcess = functions.split_music(f, dict_sliders)

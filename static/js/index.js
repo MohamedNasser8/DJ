@@ -22,8 +22,12 @@ var wavesurfer1 = WaveSurfer.create({
 });
 
 let path = document.getElementById("flask_data").getAttribute("path");
+let path1 = document.getElementById("flask_data").getAttribute("path-mode");
+wavesurfer1.load(path1);
 wavesurfer.load(path);
-wavesurfer1.load(path);
+
+
+
 
 
 playBtn.onclick = function () {
@@ -83,11 +87,11 @@ for (let i =0 ; i<n;i++){
 str +=     
 `
 <div class="custom-file">
-  <input type="file" class="custom-file-input" name = "file" id="inputGroupFile01">
+<input type="file" class="custom-file-input" name = "file" id="inputGroupFile01" onchange="uploadfile()"">
 </div>
-</div>
+
   <input class="btn btn-primary" type="submit" value="Submit">
-` 
+  ` 
 document.getElementsByClassName("all-sliders")[0].innerHTML = str
 
 const sliders = document.getElementsByClassName("slider")
@@ -97,3 +101,17 @@ for (let i = 0 ;i<=number.length;i++){
       number[i].innerHTML = sliders[i].value 
   }
 }
+
+function uploadfile(){
+  let inp = document.getElementById("inputGroupFile01");
+  console.log(inp.files[0])
+  let fr = new FileReader()
+  fr.onload = function(){
+      console.log(fr.result)
+      // document.getElementById("audio-play").src =  fr.result
+      wavesurfer.load(fr.result);
+  }
+  fr.readAsDataURL(inp.files[0])
+}
+
+
