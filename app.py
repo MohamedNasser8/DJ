@@ -45,29 +45,39 @@ def get_sliders(n, names):
     return dict_sliders
 
 
-@app.route('/', methods=['GET', "POST"])
-@app.route('/music', methods=['GET', "POST"])
+@app.route('/', methods=['GET', "POST","put"])
+@app.route('/music', methods=['GET', "POST","put"])
 def music():
     n_of_sliders = 4
     dict_sliders = get_sliders(
         n_of_sliders, ["piano", "guitar", "vioin", "drums"])
+    f = None
+    # if request.method ==  "put":
+    #     pass
 
-
+    # if request.method == "PUT":
+    #     f = request.files['file']
+    #     path = os.path.join(app.config['UPLOAD_FOLDER'], "test.wav")
+    #     f.save(path)
 
     if request.method == "POST" :
         for i in range(n_of_sliders):
             dict_sliders[f"slider{i}"]["value"] = request.form.get(
                 f"slider{i}")
-        try:
-            f = request.files['file']
+        f = request.files['file']
+        if f.filename != "" :
             path = os.path.join(app.config['UPLOAD_FOLDER'], "test.wav")
             f.save(path)
-            scale, sr = librosa.load(path)
-
-        except:
-            samplerate,  f = wavfile.read('static/audio/test.wav')
+        else:
             path = "static/audio/test.wav"
-            scale, sr = librosa.load(path)
+            
+        scale, sr = librosa.load(path)
+
+
+        # except:
+        #     samplerate,  f = wavfile.read('static/audio/test.wav')
+        #     path = "static/audio/test.wav"
+        #     scale, sr = librosa.load(path)
 
 
         f = functions.fourier(scale)
