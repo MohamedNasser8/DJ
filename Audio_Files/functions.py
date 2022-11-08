@@ -73,12 +73,13 @@ def split_arrhythmia(ecg_freq):
     artial_trachycardia = [0]*len(ecg_freq)
     artial_flutter = [0]*len(ecg_freq)
     artial_fibrillation = [0]*len(ecg_freq)
-    # 230
-    artial_trachycardia[220:240] = ecg_freq[220:240]
+
+    # # 230
+    artial_trachycardia[0:11000] = ecg_freq[0:11000]*np.hanning(11000)
     # 300
-    artial_flutter[290:310] = ecg_freq[290:310]
+    artial_flutter[10000:21000] = ecg_freq[10000:21000]*np.hanning(11000)
     # 350
-    artial_fibrillation[340:360] = ecg_freq[340:360]
+    artial_fibrillation[20000:35000] = ecg_freq[20000:35000]*np.hanning(15000)
 
     f_normal = ecg_freq-artial_trachycardia-artial_flutter-artial_fibrillation
 
