@@ -15,29 +15,47 @@
     />
   </head>
   <body>
-    <ul class="nav justify-content-center mb-4">
-      <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="/">Music</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/vocals">Vocals</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/ecg">Ecg</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="freq">Random Frequncies</a>
-      </li>
-    </ul>
-  
+    <div class="my-4 d-flex gap-4" style="width: 30%; margin-left: 40%">
+      <input
+        type="radio"
+        class="btn-check"
+        name="options"
+        id="option1"
+        autocomplete="off"
+        checked
+      />
+      <label class="btn btn-secondary" for="option1">Music</label>
+
+      <input
+        type="radio"
+        class="btn-check"
+        name="options"
+        id="option2"
+        autocomplete="off"
+      />
+      <label class="btn btn-secondary" for="option2">Voclas</label>
+
+      <input
+        type="radio"
+        class="btn-check"
+        name="options"
+        id="option3"
+        autocomplete="off"
+      />
+      <label class="btn btn-secondary" for="option3">Ecg</label>
+    </div>
     {% block body %}{% endblock %}
 
-  
-    <div id="flask_data" data='{{dict_values | tojson}}' style="display:none;" path = "{{ path }}"  path-mode={{path1}}  ></div>
+    <div
+      id="flask1"
+      data="{{dict_values | tojson}}"
+      style="display: none"
+      path="{{ path }}"
+      path-mode="{{path1}}"
+    ></div>
     <script src="static/js/canvas.js"></script>
     <script src="static/js/wavesurfer.js"></script>
 
     <script src="static/js/index.js"></script>
-    
   </body>
 </html>

@@ -19,8 +19,8 @@ var wavesurfer1 = WaveSurfer.create({
   hideScrollbar: true,
 });
 
-let path = document.getElementById("flask_data").getAttribute("path");
-let path1 = document.getElementById("flask_data").getAttribute("path-mode");
+let path = document.getElementById("flask1").getAttribute("path");
+let path1 = document.getElementById("flask1").getAttribute("path-mode");
 wavesurfer1.load(path1);
 wavesurfer.load(path);
 
@@ -77,37 +77,43 @@ slider.oninput = function () {
 // console.log(waves)
 // for(let i=0;i<waves.length;i++){
 // }
+let n = 0;
 
-/*scroll buttons */
-let values = JSON.parse(
-  document.getElementById("flask_data").getAttribute("data")
-);
-console.log(values);
-let n = Object.keys(values).length;
-let str = `<div class="d-flex flex-wrap all-sliders">`;
-for (let i = 0; i < n; i++) {
-  str += `<div class="container1">
-        <div class="number" id="number${i}">${
-    values[`slider${i}`]["value"]
-  }</div>
-        <input type="range" min="-10" max="10" value=${
-          values[`slider${i}`]["value"]
-        } class="slider" id="slider${i}" name="slider${i}">
+function changeContent() {
+  n = 4;
+  if (document.getElementById("option1").checked) n = 4;
+  else if (document.getElementById("option2").checked) n = 10;
+  else n = 3;
+  let str = `<div class="d-flex flex-wrap all-sliders">`;
+  for (let i = 0; i < n; i++) {
+    str += `<div class="container1">
+          <div class="number" id="number${i}"></div>
+          <input type="range" min="-10" max="10" value=1 class="slider" id="slider${i}" name="slider${i}">
+  
+          <div style = "transform: rotate(90deg);">a</div>
+      </div>`;
+  }
 
-        <div style = "transform: rotate(90deg);">${
-          values[`slider${i}`]["name"]
-        }</div>
-    </div>`;
+  str += `</div>
+  <div class="upload"><div class="custom-file">
+  <input type="file" class="custom-file-input" name = "file" id="inputGroupFile01" onchange="uploadfile()"">
+  </div>
+  
+    <input class="btn btn-primary" type="submit" value="Submit"></div>
+    `;
+  document.getElementsByClassName("form")[0].innerHTML = str;
 }
 
-str += `</div>
-<div class="upload"><div class="custom-file">
-<input type="file" class="custom-file-input" name = "file" id="inputGroupFile01" onchange="uploadfile()"">
-</div>
+document.getElementById("option1").addEventListener("click", changeContent);
+document.getElementById("option2").addEventListener("click", changeContent);
+document.getElementById("option3").addEventListener("click", changeContent);
 
-  <input class="btn btn-primary" type="submit" value="Submit"></div>
-  `;
-document.getElementsByClassName("form")[0].innerHTML = str;
+/*scroll buttons */
+
+// let values = JSON.parse(document.getElementById("flask1").getAttribute("data"));
+
+// n = Object.keys(values).length;
+
 // document.getElementsByClassName("upload").innerHTML = str1;
 
 const sliders = document.getElementsByClassName("slider");

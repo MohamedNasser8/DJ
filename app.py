@@ -75,7 +75,7 @@ def music():
         sf.write('static/audio/sig.wav', scaleProcess.real, round(sr/2))
         path1 = 'static/audio/sig.wav'
         return render_template('music.html', dict_values=dict_sliders, path=path, path1=path1, url="/")
-
+    print(dict_sliders)
     return render_template('music.html', dict_values=dict_sliders, path=None, path1=None, url="/")
 
 
