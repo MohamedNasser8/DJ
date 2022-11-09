@@ -100,7 +100,7 @@ def ecg():
 def vocals():
     n_of_sliders = 10
     dict_sliders = get_sliders(
-        n_of_sliders, ["A", "B", "C", 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
+        n_of_sliders, ["A", "Y", "V", 'Th', 'Ch', 'S', 'O', 'R', 'N', 'D'])
     if request.method == "POST":
         for i in range(n_of_sliders):
             dict_sliders[f"slider{i}"]["value"] = request.form.get(

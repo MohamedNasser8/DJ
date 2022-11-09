@@ -138,7 +138,7 @@ def split_vowels(audio_freq, sliders):
         f_rest : Vowel the other components
 
     """
-    print(sliders)
+
 # inizialization of components arrays
     f_A = [0]*len(audio_freq)
     f_Y = [0]*len(audio_freq)
@@ -194,5 +194,9 @@ def split_vowels(audio_freq, sliders):
     f_d[43000:49000] = audio_freq[43000:49000]
 
     f_rest = audio_freq - f_r - f_A - f_ch - f_d - \
-        f_n - f_Y - f_th - f_o - f_n - f_s - f_V
-    return np.add(f_A,  np.add(f_Y, np.add(f_V, np.add(f_th, np.add(f_ch, np.add(f_s, np.add(f_o, np.add(f_r, np.add(f_n, np.add(f_d, f_rest))))))))))
+        f_n - f_Y - f_th - f_o - f_s - f_V
+    return np.array(f_rest)+int(sliders["slider0"]["value"])*np.array(f_A) \
+    + int(sliders["slider1"]["value"])*np.array(f_Y)+int(sliders["slider2"]["value"])*np.array(f_V)+ \
+        int(sliders["slider3"]["value"])*np.array(f_th)+int(sliders["slider4"]["value"])*np.array(f_ch)+ int(sliders["slider5"]["value"])*np.array(f_s)+ \
+    int(sliders["slider6"]["value"])*np.array(f_o)+int(sliders["slider7"]["value"])*np.array(f_r)+int(sliders["slider8"]["value"])*np.array(f_n) \
+        +int(sliders["slider9"]["value"])*np.array(f_d)
