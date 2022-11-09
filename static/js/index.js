@@ -80,17 +80,30 @@ slider.oninput = function () {
 let n = 0;
 
 function changeContent() {
+  wavesurfer.empty()
+  wavesurfer1.empty()
   n = 4;
-  if (document.getElementById("option1").checked) n = 4;
-  else if (document.getElementById("option2").checked) n = 10;
-  else n = 3;
+
+  if (document.getElementById("option1").checked) {
+    n = 4;
+    list = ["Piano", "Guitar", "Drums", "violin"]
+  }
+  else if
+    (document.getElementById("option2").checked) {
+    n = 10;
+    list = ["A", "Y", "V", 'Th', 'Ch', 'S', 'O', 'R', 'N', 'D']
+  }
+  else {
+    n = 3;
+    list = ["Trachycardia", "Flutterid", "Fibrillation"];
+  }
   let str = `<div class="d-flex flex-wrap all-sliders">`;
   for (let i = 0; i < n; i++) {
     str += `<div class="container1">
-          <div class="number" id="number${i}"></div>
-          <input type="range" min="-10" max="10" value=1 class="slider" id="slider${i}" name="slider${i}">
+          <div class="number" id="number${i}">0</div>
+          <input type="range" min="-10" max="10" value=0 class="slider" id="slider${i}" name="slider${i}">
   
-          <div style = "transform: rotate(90deg);">a</div>
+          <div style = "transform: rotate(90deg);">${list[i]}</div>
       </div>`;
   }
 
@@ -98,10 +111,18 @@ function changeContent() {
   <div class="upload"><div class="custom-file">
   <input type="file" class="custom-file-input" name = "file" id="inputGroupFile01" onchange="uploadfile()"">
   </div>
-  
+  <input type="range" min="-10" max="10" value=${n} name="num_sliders" style="display:none">
+
     <input class="btn btn-primary" type="submit" value="Submit"></div>
     `;
   document.getElementsByClassName("form")[0].innerHTML = str;
+  const sliders = document.getElementsByClassName("slider");
+  const number = document.getElementsByClassName("number");
+  for (let i = 0; i < number.length; i++) {
+    sliders[i].oninput = function () {
+      number[i].innerHTML = sliders[i].value;
+    };
+  }
 }
 
 document.getElementById("option1").addEventListener("click", changeContent);
@@ -116,13 +137,7 @@ document.getElementById("option3").addEventListener("click", changeContent);
 
 // document.getElementsByClassName("upload").innerHTML = str1;
 
-const sliders = document.getElementsByClassName("slider");
-const number = document.getElementsByClassName("number");
-for (let i = 0; i <= number.length; i++) {
-  sliders[i].oninput = function () {
-    number[i].innerHTML = sliders[i].value;
-  };
-}
+
 
 function uploadfile() {
   let inp = document.getElementById("inputGroupFile01");
