@@ -46,14 +46,11 @@ def get_sliders(n, names):
 @app.route('/', methods=['GET', "POST", "put"])
 @app.route('/music', methods=['GET', "POST", "put"])
 def music():
-    n_of_sliders = 4
-    dict_sliders = get_sliders(
-        n_of_sliders, ["piano", "guitar", "vioin", "drums"])
-    f = None
-
+    dict_sliders = {}
     if request.method == "POST":
+        n_of_sliders = int(request.form.get("num_sliders"))
         for i in range(n_of_sliders):
-            dict_sliders[f"slider{i}"]["value"] = request.form.get(
+            dict_sliders[f"slider{i}"] = request.form.get(
                 f"slider{i}")
         f = request.files['file']
         if f.filename != "":
@@ -63,19 +60,18 @@ def music():
             path = "static/audio/test.wav"
 
         scale, sr = librosa.load(path)
-
-        # except:
-        #     samplerate,  f = wavfile.read('static/audio/test.wav')
-        #     path = "static/audio/test.wav"
-        #     scale, sr = librosa.load(path)
-
         f = functions.fourier(scale)
         t = functions.get_time(scale, sr)
-        scaleProcess = functions.split_music(f, dict_sliders)
+        if n_of_sliders == 3:
+            scaleProcess = functions.split_arrhythmia(f,dict_sliders)
+        elif n_of_sliders == 4:
+            scaleProcess = functions.split_music(f,dict_sliders)
+        elif n_of_sliders == 10 :
+            scaleProcess = functions.split_vowels(f,dict_sliders)
+
         sf.write('static/audio/sig.wav', scaleProcess.real, round(sr/2))
         path1 = 'static/audio/sig.wav'
         return render_template('music.html', dict_values=dict_sliders, path=path, path1=path1, url="/")
-    print(dict_sliders)
     return render_template('music.html', dict_values=dict_sliders, path=None, path1=None, url="/")
 
 

@@ -1,7 +1,9 @@
 import numpy as np
-
+import librosa
 
 #-------------------------------------- Fourier/Inverse ------------------------------------------#
+
+
 def fourier(signal):
     """
         Calculate fourier transform of the signal
@@ -56,7 +58,7 @@ def get_time(scale, sr):
 
 #---------------------------------------- Signal Spliters -----------------------------------------#
 
-def split_arrhythmia(ecg_freq,sliders):
+def split_arrhythmia(ecg_freq, sliders):
     """
         separate arithmia components
         Parameters
@@ -83,7 +85,7 @@ def split_arrhythmia(ecg_freq,sliders):
 
     f_normal = ecg_freq-artial_trachycardia-artial_flutter-artial_fibrillation
 
-    return int(sliders["slider0"]["value"])*inverse_fourier(artial_trachycardia).real+ int(sliders["slider1"]["value"])*inverse_fourier(artial_flutter).real+ int(sliders["slider2"]["value"])*inverse_fourier(artial_fibrillation).real+inverse_fourier(f_normal).real
+    return int(sliders["slider0"])*inverse_fourier(artial_trachycardia).real + int(sliders["slider1"])*inverse_fourier(artial_flutter).real + int(sliders["slider2"])*inverse_fourier(artial_fibrillation).real+inverse_fourier(f_normal).real
 
 
 def split_music(music_freq, sliders):
@@ -109,10 +111,11 @@ def split_music(music_freq, sliders):
     f_piano[301211: 303045] = music_freq[301211: 303045]
     f_piano[21211: 81211] = music_freq[21211: 81211]
     f_guitar[8211: 21211] = music_freq[8211: 21211]
-    f_drums[100: 500] = music_freq[100: 500]
-
+    # f_drums[100: 500] = music_freq[100: 500]
+    drums, sr = librosa.load('Audio_Files\Drums.wav')
+    drums = drums[:len(inverse_fourier(f_piano))]
     f_rest = music_freq - f_piano - f_guitar
-    return int(sliders["slider0"]["value"])*inverse_fourier(f_piano).real + int(sliders["slider1"]["value"])*inverse_fourier(f_guitar).real + int(sliders["slider2"]["value"])*inverse_fourier(f_drums).real + int(sliders["slider3"]["value"])*inverse_fourier(f_rest).real
+    return int(sliders["slider0"])*inverse_fourier(f_piano).real + int(sliders["slider1"])*inverse_fourier(f_guitar).real + int(sliders["slider2"])*drums + int(sliders["slider3"])*inverse_fourier(f_rest).real
 
 
 def split_vowels(audio_freq, sliders):
@@ -195,8 +198,8 @@ def split_vowels(audio_freq, sliders):
 
     f_rest = audio_freq - f_r - f_A - f_ch - f_d - \
         f_n - f_Y - f_th - f_o - f_s - f_V
-    return np.array(f_rest)+int(sliders["slider0"]["value"])*np.array(f_A) \
-    + int(sliders["slider1"]["value"])*np.array(f_Y)+int(sliders["slider2"]["value"])*np.array(f_V)+ \
-        int(sliders["slider3"]["value"])*np.array(f_th)+int(sliders["slider4"]["value"])*np.array(f_ch)+ int(sliders["slider5"]["value"])*np.array(f_s)+ \
-    int(sliders["slider6"]["value"])*np.array(f_o)+int(sliders["slider7"]["value"])*np.array(f_r)+int(sliders["slider8"]["value"])*np.array(f_n) \
-        +int(sliders["slider9"]["value"])*np.array(f_d)
+    return np.array(f_rest)+int(sliders["slider0"])*np.array(f_A) \
+        + int(sliders["slider1"])*np.array(f_Y)+int(sliders["slider2"])*np.array(f_V) + \
+        int(sliders["slider3"])*np.array(f_th)+int(sliders["slider4"])*np.array(f_ch) + int(sliders["slider5"])*np.array(f_s) + \
+        int(sliders["slider6"])*np.array(f_o)+int(sliders["slider7"])*np.array(f_r)+int(sliders["slider8"])*np.array(f_n) \
+        + int(sliders["slider9"])*np.array(f_d)
