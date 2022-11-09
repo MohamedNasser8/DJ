@@ -56,7 +56,7 @@ def get_time(scale, sr):
 
 #---------------------------------------- Signal Spliters -----------------------------------------#
 
-def split_arrhythmia(ecg_freq):
+def split_arrhythmia(ecg_freq,sliders):
     """
         separate arithmia components
         Parameters
@@ -83,7 +83,7 @@ def split_arrhythmia(ecg_freq):
 
     f_normal = ecg_freq-artial_trachycardia-artial_flutter-artial_fibrillation
 
-    return artial_trachycardia, artial_flutter, artial_fibrillation, f_normal
+    return int(sliders["slider0"]["value"])*inverse_fourier(artial_trachycardia).real+ int(sliders["slider1"]["value"])*inverse_fourier(artial_flutter).real+ int(sliders["slider2"]["value"])*inverse_fourier(artial_fibrillation).real+inverse_fourier(f_normal).real
 
 
 def split_music(music_freq, sliders):

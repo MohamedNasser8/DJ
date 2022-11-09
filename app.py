@@ -82,16 +82,26 @@ def music():
 @app.route('/ecg', methods=['GET', "POST"])
 def ecg():
     n_of_sliders = 3
-    dict_sliders = get_sliders(n_of_sliders, ["low", "mid", "high"])
+    dict_sliders = get_sliders(n_of_sliders, ["Trachycardia", "Flutterid", "Fibrillation"])
     if request.method == "POST":
         for i in range(n_of_sliders):
             dict_sliders[f"slider{i}"]["value"] = request.form.get(
                 f"slider{i}")
         f = request.files['file']
-        path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
-        f.save(path)
+        if f.filename != "":
+            path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
+            f.save(path)
+        else:
+            path = "static/audio/test.wav"
 
-        return render_template('ecg.html', dict_values=dict_sliders, path=path, path1=None)
+        scale, sr = librosa.load(path)
+        ecg_freq = functions.fourier(scale[:1500])
+        processed = functions.split_arrhythmia(ecg_freq, dict_sliders)
+        print(len(scale), len(processed))
+        sf.write('static/audio/sig.wav', processed.real, round(sr))
+        path1 = 'static/audio/sig.wav'
+
+        return render_template('ecg.html', dict_values=dict_sliders, path=path, path1=path1)
 
     return render_template('ecg.html', dict_values=dict_sliders, path=None, path1=None)
 
