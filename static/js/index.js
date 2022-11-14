@@ -9,6 +9,14 @@ var wavesurfer = WaveSurfer.create({
   barHeight: 4,
   reponsive: true,
   hideScrollbar: true,
+  plugins: [
+    WaveSurfer.spectrogram.create({
+      wavesurfer: wavesurfer,
+      container: "#waveform",
+      labels: true,
+      height: 206,
+    }),
+  ],
 });
 var wavesurfer1 = WaveSurfer.create({
   container: "#waveform1",
@@ -17,6 +25,14 @@ var wavesurfer1 = WaveSurfer.create({
   barHeight: 4,
   reponsive: true,
   hideScrollbar: true,
+  plugins: [
+    WaveSurfer.spectrogram.create({
+      wavesurfer: wavesurfer,
+      container: "#waveform1",
+      labels: true,
+      height: 206,
+    }),
+  ],
 });
 
 let path = document.getElementById("flask1").getAttribute("path");
@@ -73,27 +89,21 @@ slider.oninput = function () {
   wavesurfer1.zoom(zoomLevel);
 };
 
-// let waves = document.getElementById('waveform').children
-// console.log(waves)
-// for(let i=0;i<waves.length;i++){
-// }
 let n = 0;
-
+changeContent();
 function changeContent() {
-  wavesurfer.empty()
-  wavesurfer1.empty()
+  // wavesurfer.empty();
+  // wavesurfer1.empty();
+
   n = 4;
 
   if (document.getElementById("option1").checked) {
     n = 4;
-    list = ["Piano", "Guitar", "Drums", "violin"]
-  }
-  else if
-    (document.getElementById("option2").checked) {
+    list = ["Piano", "Guitar", "Drums", "violin"];
+  } else if (document.getElementById("option2").checked) {
     n = 10;
-    list = ["A", "Y", "V", 'Th', 'Ch', 'S', 'O', 'R', 'N', 'D']
-  }
-  else {
+    list = ["A", "Y", "V", "Th", "Ch", "S", "O", "R", "N", "D"];
+  } else {
     n = 3;
     list = ["Trachycardia", "Flutterid", "Fibrillation"];
   }
@@ -137,14 +147,11 @@ document.getElementById("option3").addEventListener("click", changeContent);
 
 // document.getElementsByClassName("upload").innerHTML = str1;
 
-
-
 function uploadfile() {
   let inp = document.getElementById("inputGroupFile01");
   console.log(inp.files[0]);
   let fr = new FileReader();
   fr.onload = function () {
-    console.log(fr.result);
     // document.getElementById("audio-play").src =  fr.result
     wavesurfer.load(fr.result);
   };

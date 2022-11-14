@@ -1,5 +1,5 @@
 .control-bar{
-    margin-top: 30px;
+    
     
 }
 .control-bar img{
@@ -34,6 +34,7 @@
 
 
 
+
 .all-sliders{
     margin-top: 100px;
     display: flex;
@@ -41,7 +42,7 @@
     /* justify-content: center; */
     /* text-align:center; */
     align-items: center;
-    height: 120px;
+    height: 80px;
     justify-content : center;
     margin-left:auto;
     width: 100%;
