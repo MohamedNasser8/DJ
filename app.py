@@ -63,69 +63,20 @@ def music():
         t = functions.get_time(scale, sr)
         if n_of_sliders == 3:
             scaleProcess = functions.split_arrhythmia(f, dict_sliders)
+            sf.write('static/audio/sig.wav', scaleProcess.real, round(sr/2))
         elif n_of_sliders == 4:
             scaleProcess = functions.split_music(f, dict_sliders)
+            sf.write('static/audio/sig.wav', scaleProcess.real, round(sr/2))
         elif n_of_sliders == 10:
             scaleProcess = functions.split_vowels(scale, dict_sliders)
+            sf.write('static/audio/sig.wav', scaleProcess.real, round(sr))
 
-        sf.write('static/audio/sig.wav', scaleProcess.real, round(sr))
         path1 = 'static/audio/sig.wav'
         return render_template('music.html', dict_values=dict_sliders, path=path, path1=path1, url="/",n_of_sliders = n_of_sliders)
     return render_template('music.html', dict_values=dict_sliders, path=None, path1=None, url="/")
 
 
-@app.route('/ecg', methods=['GET', "POST"])
-def ecg():
-    n_of_sliders = 3
-    dict_sliders = get_sliders(
-        n_of_sliders, ["Trachycardia", "Flutterid", "Fibrillation"])
-    if request.method == "POST":
-        for i in range(n_of_sliders):
-            dict_sliders[f"slider{i}"]["value"] = request.form.get(
-                f"slider{i}")
-        f = request.files['file']
-        if f.filename != "":
-            path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
-            f.save(path)
-        else:
-            path = "static/audio/test.wav"
 
-        scale, sr = librosa.load(path)
-        ecg_freq = functions.fourier(scale[:1500])
-        processed = functions.split_arrhythmia(ecg_freq, dict_sliders)
-        print(len(scale), len(processed))
-        sf.write('static/audio/sig.wav', processed.real, round(sr))
-        path1 = 'static/audio/sig.wav'
-
-        return render_template('ecg.html', dict_values=dict_sliders, path=path, path1=path1)
-
-    return render_template('ecg.html', dict_values=dict_sliders, path=None, path1=None)
-
-
-@app.route('/vocals', methods=['GET', "POST"])
-def vocals():
-    n_of_sliders = 10
-    dict_sliders = get_sliders(
-        n_of_sliders, ["A", "Y", "V", 'Th', 'Ch', 'S', 'O', 'R', 'N', 'D'])
-    if request.method == "POST":
-        for i in range(n_of_sliders):
-            dict_sliders[f"slider{i}"]["value"] = request.form.get(
-                f"slider{i}")
-        f = request.files['file']
-        if f.filename != "":
-            path = os.path.join(app.config['UPLOAD_FOLDER'], "test.wav")
-            f.save(path)
-        else:
-            path = "static/audio/test.wav"
-
-        scale, sr = librosa.load(path)
-        processed = functions.split_vowels(scale, dict_sliders)
-        print(len(scale), len(processed))
-        sf.write('static/audio/sig.wav', processed, round(sr))
-        path1 = 'static/audio/sig.wav'
-        return render_template('vocals.html', dict_values=dict_sliders, path=path, path1=path1)
-
-    return render_template('vocals.html', dict_values=dict_sliders, path=None, path1=None)
 
 
 if __name__ == '__main__':
