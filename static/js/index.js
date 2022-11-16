@@ -89,13 +89,37 @@ slider.oninput = function () {
   wavesurfer1.zoom(zoomLevel);
 };
 
-let n = 0;
+const data_from_flask = document.getElementById("flask1")
+var dict_data = JSON.parse(document.getElementById("flask1").getAttribute("data"));
+
+
+let n = data_from_flask.getAttribute("n_of_sliders");
+if (n == ""){
+  n = 4;
+}
+
+else{
+  if(n == 10){
+    document.getElementById("option1").checked = false
+    document.getElementById("option2").checked = true
+    document.getElementById("option3").checked = false
+
+
+  }
+  if (n == 3){
+    document.getElementById("option1").checked = false
+    document.getElementById("option2").checked = false
+    document.getElementById("option3").checked = true
+  }
+}
+
+
 changeContent();
 function changeContent() {
   // wavesurfer.empty();
   // wavesurfer1.empty();
 
-  n = 4;
+  // n = 4;
 
   if (document.getElementById("option1").checked) {
     n = 4;
@@ -103,19 +127,33 @@ function changeContent() {
   } else if (document.getElementById("option2").checked) {
     n = 10;
     list = ["A", "Y", "V", "Th", "Ch", "S", "O", "R", "N", "D"];
-  } else {
+  } else if (document.getElementById("option3").checked) {
     n = 3;
     list = ["Trachycardia", "Flutterid", "Fibrillation"];
   }
+  
+
   let str = `<div class="d-flex flex-wrap all-sliders">`;
+  if (Object.keys(dict_data).length==0 || Object.keys(dict_data).length != n){
   for (let i = 0; i < n; i++) {
     str += `<div class="container1">
-          <div class="number" id="number${i}">0</div>
-          <input type="range" min="-10" max="10" value=0 class="slider" id="slider${i}" name="slider${i}">
-  
+          <div class="number" id="number${i}">1</div>
+          <input type="range" min="-10" max="10" value=1 class="slider" id="slider${i}" name="slider${i}">
           <div style = "transform: rotate(90deg);">${list[i]}</div>
       </div>`;
   }
+}
+else{
+  for (let i = 0; i < n; i++) {
+
+    str += `<div class="container1">
+          <div class="number" id="number${i}">${dict_data[`slider${i}`]}</div>
+          <input type="range" min="-10" max="10" value=${dict_data[`slider${i}`]} class="slider" id="slider${i}" name="slider${i}">
+          <div style = "transform: rotate(90deg);">${list[i]}</div>
+      </div>`;
+  }
+
+}
 
   str += `</div>
   <div class="upload"><div class="custom-file">
@@ -141,7 +179,7 @@ document.getElementById("option3").addEventListener("click", changeContent);
 
 /*scroll buttons */
 
-// let values = JSON.parse(document.getElementById("flask1").getAttribute("data"));
+// let values = JSON.parse();
 
 // n = Object.keys(values).length;
 

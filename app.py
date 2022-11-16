@@ -44,7 +44,6 @@ def get_sliders(n, names):
 
 
 @app.route('/', methods=['GET', "POST", "put"])
-@app.route('/music', methods=['GET', "POST", "put"])
 def music():
     dict_sliders = {}
     if request.method == "POST":
@@ -63,22 +62,23 @@ def music():
         f = functions.fourier(scale)
         t = functions.get_time(scale, sr)
         if n_of_sliders == 3:
-            scaleProcess = functions.split_arrhythmia(f,dict_sliders)
+            scaleProcess = functions.split_arrhythmia(f, dict_sliders)
         elif n_of_sliders == 4:
-            scaleProcess = functions.split_music(f,dict_sliders)
-        elif n_of_sliders == 10 :
-            scaleProcess = functions.split_vowels(f,dict_sliders)
+            scaleProcess = functions.split_music(f, dict_sliders)
+        elif n_of_sliders == 10:
+            scaleProcess = functions.split_vowels(scale, dict_sliders)
 
-        sf.write('static/audio/sig.wav', scaleProcess.real, round(sr/2))
+        sf.write('static/audio/sig.wav', scaleProcess.real, round(sr))
         path1 = 'static/audio/sig.wav'
-        return render_template('music.html', dict_values=dict_sliders, path=path, path1=path1, url="/")
+        return render_template('music.html', dict_values=dict_sliders, path=path, path1=path1, url="/",n_of_sliders = n_of_sliders)
     return render_template('music.html', dict_values=dict_sliders, path=None, path1=None, url="/")
 
 
 @app.route('/ecg', methods=['GET', "POST"])
 def ecg():
     n_of_sliders = 3
-    dict_sliders = get_sliders(n_of_sliders, ["Trachycardia", "Flutterid", "Fibrillation"])
+    dict_sliders = get_sliders(
+        n_of_sliders, ["Trachycardia", "Flutterid", "Fibrillation"])
     if request.method == "POST":
         for i in range(n_of_sliders):
             dict_sliders[f"slider{i}"]["value"] = request.form.get(

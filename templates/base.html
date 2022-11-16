@@ -48,10 +48,11 @@
 
     <div
       id="flask1"
-      data="{{dict_values | tojson}}"
+      data='{{dict_values | tojson | safe}}'
       style="display: none"
       path="{{ path }}"
       path-mode="{{path1}}"
+      n_of_sliders= "{{n_of_sliders}}"
     ></div>
     <script src="static/js/canvas.js"></script>
     <script src="static/js/wavesurfer.js"></script>
